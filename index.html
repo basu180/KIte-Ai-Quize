@@ -1,0 +1,82 @@
+import React, { useState, useEffect } from 'react';
+import Confetti from 'react-confetti';
+
+export default function KiteQuiz() {
+  const questions = [
+    { q: 'What is Kite AI?', options: ['Code completion tool', 'Social media app', 'Email service', 'Game'], answer: 0 },
+    { q: 'Who uses Kite AI?', options: ['Developers', 'Pilots', 'Chefs', 'Doctors'], answer: 0 },
+    { q: 'Kite AI provides?', options: ['Code suggestions', 'Music streaming', 'Photo editing', 'Banking'], answer: 0 },
+    { q: 'Kite AI suggestions are based on?', options: ['Code context & ML', 'Weather', 'Sports scores', 'Movies'], answer: 0 },
+  ];
+
+  const [current, setCurrent] = useState(0);
+  const [selected, setSelected] = useState(null);
+  const [score, setScore] = useState(0);
+  const [showAnswer, setShowAnswer] = useState(false);
+  const [completed, setCompleted] = useState(false);
+
+  function handleSelect(i) { setSelected(i); }
+
+  function handleSubmit() {
+    if (selected === questions[current].answer) setScore(score + 1);
+    setShowAnswer(true);
+  }
+
+  function handleNext() {
+    setSelected(null);
+    setShowAnswer(false);
+    if (current + 1 === questions.length) setCompleted(true);
+    else setCurrent(current + 1);
+  }
+
+  function handleRestart() {
+    setCurrent(0);
+    setSelected(null);
+    setScore(0);
+    setShowAnswer(false);
+    setCompleted(false);
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200 flex flex-col items-center justify-center p-6">
+      {completed && <Confetti />}
+      <div className="bg-white rounded-3xl shadow-2xl max-w-3xl w-full p-8">
+        <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">🚀 Kite AI Quiz</h1>
+
+        {!completed ? (
+          <>
+            <div className="mb-4 text-gray-700 font-medium">Question {current + 1} / {questions.length}</div>
+            <div className="mb-6 p-5 bg-yellow-100 rounded-xl shadow-inner">
+              <div className="font-semibold text-lg mb-3">{questions[current].q}</div>
+              <div className="space-y-3">
+                {questions[current].options.map((opt, i) => (
+                  <button key={i} onClick={() => handleSelect(i)}
+                    className={`w-full p-4 rounded-xl border flex justify-between items-center font-medium ${selected === i ? 'bg-blue-100 border-blue-500' : 'bg-white border-gray-300 hover:bg-yellow-50'} ${showAnswer && i === questions[current].answer ? 'ring-2 ring-green-400' : ''}`}
+                  >
+                    <span>{opt}</span>
+                    {showAnswer && i === questions[current].answer && <span className="text-green-700 font-bold">✓</span>}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {!showAnswer ? (
+              <button onClick={handleSubmit} className="px-6 py-2 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition">Submit</button>
+            ) : (
+              <button onClick={handleNext} className="px-6 py-2 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition">Next Question</button>
+            )}
+
+            <div className="mt-4 text-gray-700 font-medium">Score: {score}</div>
+          </>
+        ) : (
+          <div className="text-center">
+            <h2 className="text-2xl font-bold mb-4">🎉 Quiz Complete!</h2>
+            <p className="mb-4 font-medium">Your Score: {score} / {questions.length}</p>
+            <button onClick={handleRestart} className="px-6 py-2 rounded-xl bg-green-600 text-white font-semibold hover:bg-green-700 transition">Restart Quiz</button>
+          </div>
+        )}
+      </div>
+      <div className="mt-6 text-gray-500 font-medium">Made by Basu</div>
+    </div>
+  );
+}
