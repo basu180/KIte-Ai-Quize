@@ -1,82 +1,217 @@
-import React, { useState, useEffect } from 'react';
-import Confetti from 'react-confetti';
-
-export default function KiteQuiz() {
-  const questions = [
-    { q: 'What is Kite AI?', options: ['Code completion tool', 'Social media app', 'Email service', 'Game'], answer: 0 },
-    { q: 'Who uses Kite AI?', options: ['Developers', 'Pilots', 'Chefs', 'Doctors'], answer: 0 },
-    { q: 'Kite AI provides?', options: ['Code suggestions', 'Music streaming', 'Photo editing', 'Banking'], answer: 0 },
-    { q: 'Kite AI suggestions are based on?', options: ['Code context & ML', 'Weather', 'Sports scores', 'Movies'], answer: 0 },
-  ];
-
-  const [current, setCurrent] = useState(0);
-  const [selected, setSelected] = useState(null);
-  const [score, setScore] = useState(0);
-  const [showAnswer, setShowAnswer] = useState(false);
-  const [completed, setCompleted] = useState(false);
-
-  function handleSelect(i) { setSelected(i); }
-
-  function handleSubmit() {
-    if (selected === questions[current].answer) setScore(score + 1);
-    setShowAnswer(true);
-  }
-
-  function handleNext() {
-    setSelected(null);
-    setShowAnswer(false);
-    if (current + 1 === questions.length) setCompleted(true);
-    else setCurrent(current + 1);
-  }
-
-  function handleRestart() {
-    setCurrent(0);
-    setSelected(null);
-    setScore(0);
-    setShowAnswer(false);
-    setCompleted(false);
-  }
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-200 via-purple-200 to-pink-200 flex flex-col items-center justify-center p-6">
-      {completed && <Confetti />}
-      <div className="bg-white rounded-3xl shadow-2xl max-w-3xl w-full p-8">
-        <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">🚀 Kite AI Quiz</h1>
-
-        {!completed ? (
-          <>
-            <div className="mb-4 text-gray-700 font-medium">Question {current + 1} / {questions.length}</div>
-            <div className="mb-6 p-5 bg-yellow-100 rounded-xl shadow-inner">
-              <div className="font-semibold text-lg mb-3">{questions[current].q}</div>
-              <div className="space-y-3">
-                {questions[current].options.map((opt, i) => (
-                  <button key={i} onClick={() => handleSelect(i)}
-                    className={`w-full p-4 rounded-xl border flex justify-between items-center font-medium ${selected === i ? 'bg-blue-100 border-blue-500' : 'bg-white border-gray-300 hover:bg-yellow-50'} ${showAnswer && i === questions[current].answer ? 'ring-2 ring-green-400' : ''}`}
-                  >
-                    <span>{opt}</span>
-                    {showAnswer && i === questions[current].answer && <span className="text-green-700 font-bold">✓</span>}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {!showAnswer ? (
-              <button onClick={handleSubmit} className="px-6 py-2 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition">Submit</button>
-            ) : (
-              <button onClick={handleNext} className="px-6 py-2 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition">Next Question</button>
-            )}
-
-            <div className="mt-4 text-gray-700 font-medium">Score: {score}</div>
-          </>
-        ) : (
-          <div className="text-center">
-            <h2 className="text-2xl font-bold mb-4">🎉 Quiz Complete!</h2>
-            <p className="mb-4 font-medium">Your Score: {score} / {questions.length}</p>
-            <button onClick={handleRestart} className="px-6 py-2 rounded-xl bg-green-600 text-white font-semibold hover:bg-green-700 transition">Restart Quiz</button>
-          </div>
-        )}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kite AI — Quiz</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#1a0b2e;--card:rgba(255,255,255,0.05);--muted:#c0b3ff;--accent:#ff55ff;--glass:rgba(255,255,255,0.05)}
+    html,body{height:100%;margin:0;font-family:'Orbitron',sans-serif;color:#e6eef6;background:linear-gradient(135deg,#1a0b2e,#3f0a54);overflow-x:hidden}
+    .wrap{max-width:980px;margin:32px auto;padding:24px;border-radius:16px;background:var(--card);backdrop-filter:blur(12px);box-shadow:0 6px 40px rgba(255,255,255,0.05)}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .title{font-size:22px;font-weight:700;letter-spacing:0.5px;color:#ffccff;text-shadow:0 0 6px #ff55ff}
+    .live{background:linear-gradient(90deg,#ff55ff,#c0b3ff);padding:6px 12px;border-radius:999px;color:#1a0b2e;font-weight:700;font-size:12px}
+    .panel{display:grid;grid-template-columns:240px 1fr;gap:18px;margin-top:18px}
+    .card{padding:16px;border-radius:14px;box-shadow:0 0 16px rgba(255,85,255,0.2),0 4px 20px rgba(63,10,84,0.4);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.1);transition:0.3s}
+    .card:hover{box-shadow:0 0 30px rgba(255,85,255,0.4),0 6px 30px rgba(63,10,84,0.6)}
+    .small{font-size:13px;color:var(--muted)}
+    .big{font-size:28px;font-weight:700;margin-top:6px;color:#ffccff}
+    .btn{display:inline-block;padding:10px 16px;border-radius:12px;background:var(--accent);color:#1a0b2e;font-weight:700;border:none;cursor:pointer;transition:0.3s;text-shadow:0 0 4px #ffccff}
+    .btn:hover{box-shadow:0 0 16px #ff55ff,0 0 24px #c0b3ff}
+    .controls{display:flex;gap:8px;margin-top:12px}
+    .quiz{padding:18px}
+    .question{font-size:18px;font-weight:600;color:#ffccff}
+    .choices{margin-top:12px;display:grid;gap:10px}
+    .choice{padding:10px 14px;border-radius:10px;background:var(--glass);border:1px solid rgba(255,255,255,0.08);cursor:pointer;transition:0.3s;text-shadow:0 0 2px #ffccff}
+    .choice:hover{box-shadow:0 0 12px #ff55ff;transform:translateY(-2px)}
+    .choice.selected{outline:2px solid rgba(255,85,255,0.3);box-shadow:0 0 20px rgba(255,85,255,0.4)}
+    .footer-controls{display:flex;justify-content:space-between;align-items:center;margin-top:16px}
+    .muted{color:var(--muted);font-size:13px}
+    .kbd{background:#2a0d42;padding:4px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.1)}
+    .result-screen{position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(26,11,46,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:0.5s}
+    .result-screen.show{opacity:1;pointer-events:auto}
+    .result-title{font-size:32px;font-weight:700;color:#ffccff;margin-bottom:12px;text-shadow:0 0 12px #ff55ff}
+    .result-score{font-size:24px;color:#c0b3ff;margin-bottom:20px}
+    .result-btn{margin:6px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <div class="title">Kite AI Dashboard</div>
+        <div class="small muted">Futuristic AI Quiz UI</div>
       </div>
-      <div className="mt-6 text-gray-500 font-medium">Made by Basu</div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="live">LIVE</div>
+        <div class="kbd">Press Enter</div>
+      </div>
+    </header>
+
+    <div class="panel">
+      <aside class="card">
+        <div class="small">Progress</div>
+        <div class="big" id="progressText">0 / 8 answered</div>
+
+        <hr style="margin:12px 0;border:none;border-top:1px solid rgba(255,255,255,0.1)">
+
+        <div class="small">Best Score</div>
+        <div class="muted" id="bestScore">—</div>
+
+        <hr style="margin:12px 0;border:none;border-top:1px solid rgba(255,255,255,0.1)">
+
+        <div class="small">Tips</div>
+        <div class="muted">Use keys 1–4 for answers. Press Enter to move next.</div>
+
+        <div style="margin-top:14px" class="controls">
+          <button class="btn" id="startBtn">Enter Quiz</button>
+          <button class="btn" id="resetBtn" style="background:#3f0a54;color:#c0b3ff">Reset</button>
+        </div>
+      </aside>
+
+      <main class="card quiz">
+        <div class="small">Question <span id="qIndex">0</span> / <span id="qTotal">8</span></div>
+        <div style="margin-top:8px;font-size:14px;color:var(--muted)">Score: <span id="score">0</span></div>
+
+        <section style="margin-top:18px">
+          <div class="question" id="questionText">KITE AI QUIZ</div>
+          <div class="choices" id="choices"></div>
+        </section>
+
+        <div class="footer-controls">
+          <div>
+            <button class="btn" id="prevBtn" style="background:#3f0a54;color:#c0b3ff">Previous</button>
+            <button class="btn" id="skipBtn" style="background:#2a0d42;color:#c0b3ff">Skip</button>
+          </div>
+          <div>
+            <button class="btn" id="nextBtn">Next</button>
+          </div>
+        </div>
+      </main>
     </div>
-  );
-}
+  </div>
+
+  <div class="result-screen" id="resultScreen">
+    <div class="result-title" id="resultTitle">Your Results</div>
+    <div class="result-score" id="resultScore">0 / 8 Correct</div>
+    <button class="btn result-btn" id="playAgainBtn">Play Again</button>
+  </div>
+
+  <script>
+    const questions = [
+      {q: 'What does AI stand for?', choices:['Artificial Intelligence','Automatic Integration','Advanced Internet','Applied Innovation'], correct:0},
+      {q: 'Who is known as the father of Artificial Intelligence?', choices:['Alan Turing','Elon Musk','Bill Gates','Mark Zuckerberg'], correct:0},
+      {q: 'Which of the following is an AI application?', choices:['Image Recognition','File Compression','Spreadsheet Calculations','Text Formatting'], correct:0},
+      {q: 'Which programming language is most used in AI?', choices:['Python','C','JavaScript','PHP'], correct:0},
+      {q: 'Which AI model is designed to mimic human conversation?', choices:['Chatbot','Database','Compiler','Spreadsheet'], correct:0},
+      {q: 'What is Machine Learning?', choices:['A subset of AI that learns from data','A hardware component of AI','A design tool','An internet browser'], correct:0},
+      {q: 'Which company created ChatGPT?', choices:['OpenAI','Google','Meta','Microsoft'], correct:0},
+      {q: 'What is the main goal of Artificial Intelligence?', choices:['To simulate human intelligence','To replace all computers','To create faster processors','To design new operating systems'], correct:0}
+    ];
+
+    let idx = -1, answers = Array(questions.length).fill(null), score = 0;
+
+    const qIndexEl = document.getElementById('qIndex');
+    const qTotalEl = document.getElementById('qTotal');
+    const questionText = document.getElementById('questionText');
+    const choicesEl = document.getElementById('choices');
+    const startBtn = document.getElementById('startBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const skipBtn = document.getElementById('skipBtn');
+    const scoreEl = document.getElementById('score');
+    const progressText = document.getElementById('progressText');
+    const bestScoreEl = document.getElementById('bestScore');
+    const resetBtn = document.getElementById('resetBtn');
+    const resultScreen = document.getElementById('resultScreen');
+    const resultScore = document.getElementById('resultScore');
+    const playAgainBtn = document.getElementById('playAgainBtn');
+    const resultTitle = document.getElementById('resultTitle');
+
+    qTotalEl.textContent = questions.length;
+
+    function renderQuestion(i){
+      if(i < 0 || i >= questions.length) return;
+      qIndexEl.textContent = i+1;
+      const item = questions[i];
+      questionText.textContent = item.q;
+      choicesEl.innerHTML = '';
+      item.choices.forEach((c,ci)=>{
+        const d = document.createElement('div');
+        d.className = 'choice';
+        d.tabIndex = 0;
+        d.dataset.index = ci;
+        d.textContent = `${ci+1}. ${c}`;
+        if(answers[i] === ci) d.classList.add('selected');
+        d.addEventListener('click', ()=> selectChoice(i,ci));
+        d.addEventListener('keydown', (e)=>{ if(e.key==='Enter') selectChoice(i,ci); });
+        choicesEl.appendChild(d);
+      });
+    }
+
+    function selectChoice(qi,choiceIndex){
+      answers[qi] = choiceIndex;
+      updateSelections(qi);
+      updateProgressAndScore();
+    }
+
+    function updateSelections(qi){
+      const nodes = choicesEl.querySelectorAll('.choice');
+      nodes.forEach(n=> n.classList.toggle('selected', Number(n.dataset.index) === answers[qi]));
+    }
+
+    function updateProgressAndScore(){
+      const answered = answers.filter(a=>a!==null).length;
+      progressText.textContent = `${answered} / ${questions.length} answered`;
+      score = answers.reduce((s,a,i)=> s + (a===questions[i].correct ? 1:0), 0);
+      scoreEl.textContent = score;
+      const best = Number(localStorage.getItem('kite_ai_best') || 0);
+      if(score > best){
+        localStorage.setItem('kite_ai_best', score);
+        bestScoreEl.textContent = score;
+      } else {
+        bestScoreEl.textContent = best>0?best:'—';
+      }
+      if(answered === questions.length){
+        showResults();
+      }
+    }
+
+    function nextQuestion(){ if(idx<questions.length-1){ idx++; renderQuestion(idx); } }
+    function prevQuestion(){ if(idx>0){ idx--; renderQuestion(idx); } }
+
+    function showResults(){
+      resultScore.textContent = `${score} / ${questions.length} Correct`;
+      let msg = '';
+      if(score===questions.length) msg='AI Genius 🌟';
+      else if(score>=questions.length*0.75) msg='Great Understanding 🤖';
+      else if(score>=questions.length*0.5) msg='Learning AI ⚡';
+      else msg='Keep Practicing 💡';
+      resultTitle.textContent = msg;
+      resultScreen.classList.add('show');
+    }
+
+    startBtn.addEventListener('click', ()=>{ if(idx===-1) idx=0; renderQuestion(idx); updateProgressAndScore(); });
+    nextBtn.addEventListener('click', ()=>{ if(idx===-1) startBtn.click(); else nextQuestion(); });
+    prevBtn.addEventListener('click', ()=>prevQuestion());
+    skipBtn.addEventListener('click', ()=>{ if(idx===-1) startBtn.click(); else nextQuestion(); });
+    resetBtn.addEventListener('click', ()=>{
+      if(!confirm('Reset progress?')) return;
+      answers=Array(questions.length).fill(null); score=0; idx=-1; qIndexEl.textContent=0; questionText.textContent='KITE AI QUIZ'; choicesEl.innerHTML=''; updateProgressAndScore(); localStorage.removeItem('kite_ai_best'); bestScoreEl.textContent='—'; resultScreen.classList.remove('show');
+    });
+    playAgainBtn.addEventListener('click', ()=>{
+      answers=Array(questions.length).fill(null); score=0; idx=-1; qIndexEl.textContent=0; questionText.textContent='KITE AI QUIZ'; choicesEl.innerHTML=''; resultScreen.classList.remove('show'); updateProgressAndScore();
+    });
+
+    document.addEventListener('keydown', (e)=>{
+      if(e.key>='1' && e.key<='4'){ const keyNum=Number(e.key)-1; if(idx>=0 && idx<questions.length){ if(keyNum<questions[idx].choices.length) selectChoice(idx,keyNum); } }
+      if(e.key==='Enter'){ if(idx===-1) startBtn.click(); else nextQuestion(); }
+      if(e.key==='ArrowRight') nextQuestion();
+      if(e.key==='ArrowLeft') prevQuestion();
+    });
+
+    updateProgressAndScore();
+  </script>
+</body>
+</html>
