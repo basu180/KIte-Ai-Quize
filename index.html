@@ -52,7 +52,7 @@
     <div class="panel">
       <aside class="card">
         <div class="small">Progress</div>
-        <div class="big" id="progressText">0 / 8 answered</div>
+        <div class="big" id="progressText">0 / 5 answered</div>
 
         <hr style="margin:12px 0;border:none;border-top:1px solid rgba(255,255,255,0.1)">
 
@@ -71,7 +71,7 @@
       </aside>
 
       <main class="card quiz">
-        <div class="small">Question <span id="qIndex">0</span> / <span id="qTotal">8</span></div>
+        <div class="small">Question <span id="qIndex">0</span> / <span id="qTotal">5</span></div>
         <div style="margin-top:8px;font-size:14px;color:var(--muted)">Score: <span id="score">0</span></div>
 
         <section style="margin-top:18px">
@@ -94,20 +94,17 @@
 
   <div class="result-screen" id="resultScreen">
     <div class="result-title" id="resultTitle">Your Results</div>
-    <div class="result-score" id="resultScore">0 / 8 Correct</div>
+    <div class="result-score" id="resultScore">0 / 5 Correct</div>
     <button class="btn result-btn" id="playAgainBtn">Play Again</button>
   </div>
 
   <script>
     const questions = [
-      {q: 'What does AI stand for?', choices:['Artificial Intelligence','Automatic Integration','Advanced Internet','Applied Innovation'], correct:0},
-      {q: 'Who is known as the father of Artificial Intelligence?', choices:['Alan Turing','Elon Musk','Bill Gates','Mark Zuckerberg'], correct:0},
-      {q: 'Which of the following is an AI application?', choices:['Image Recognition','File Compression','Spreadsheet Calculations','Text Formatting'], correct:0},
-      {q: 'Which programming language is most used in AI?', choices:['Python','C','JavaScript','PHP'], correct:0},
-      {q: 'Which AI model is designed to mimic human conversation?', choices:['Chatbot','Database','Compiler','Spreadsheet'], correct:0},
-      {q: 'What is Machine Learning?', choices:['A subset of AI that learns from data','A hardware component of AI','A design tool','An internet browser'], correct:0},
-      {q: 'Which company created ChatGPT?', choices:['OpenAI','Google','Meta','Microsoft'], correct:0},
-      {q: 'What is the main goal of Artificial Intelligence?', choices:['To simulate human intelligence','To replace all computers','To create faster processors','To design new operating systems'], correct:0}
+      {q: 'What is the primary focus of the Kite AI Ozone Testnet?', choices:['Testing new AI models','Enhancing blockchain infrastructure','Integrating AI with decentralized finance','Both 1 and 2'], correct:3},
+      {q: 'Which feature allows users to operate across multiple blockchains in Ozone?', choices:['Universal Accounts','Cross-chain Wallets','Multi-chain Tokens','Decentralized Bridges'], correct:0},
+      {q: 'What is the purpose of staking in the Ozone Testnet?', choices:['To earn real tokens','To secure subnets and support AI agent activity','To participate in governance','To mine new tokens'], correct:1},
+      {q: 'Which mechanism ensures fair attribution and rewards in Kite AI?', choices:['Proof of Stake','Proof of Work','Proof of Attributed Intelligence','Proof of Authority'], correct:2},
+      {q: 'Which platform is integrated for social logins in Ozone?', choices:['Facebook','Google','Particle Network','Twitter'], correct:2}
     ];
 
     let idx = -1, answers = Array(questions.length).fill(null), score = 0;
